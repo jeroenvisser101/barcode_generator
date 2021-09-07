@@ -66,14 +66,40 @@ defmodule BarcodeGeneratorTest do
 
   describe "BarcodeGenerator.generate/2" do
     test "generates valid barcodes" do
+      # GTIN-12
+      barcodes = BarcodeGenerator.generate(619_659_161_415, 619_659_161_509)
+
+      assert length(barcodes) == 10
+      assert Enum.all?(barcodes, &BarcodeGenerator.valid?/1)
+
+      # GTIN-13
       barcodes = BarcodeGenerator.generate(6_291_041_500_200, 6_291_041_500_299)
+
+      assert length(barcodes) == 10
+      assert Enum.all?(barcodes, &BarcodeGenerator.valid?/1)
+
+      # GTIN-14
+      barcodes = BarcodeGenerator.generate(62_910_415_000_200, 62_910_415_000_299)
 
       assert length(barcodes) == 10
       assert Enum.all?(barcodes, &BarcodeGenerator.valid?/1)
     end
 
     test "handles stack-exceeding barcodes" do
+      # GTIN-12
+      barcodes = BarcodeGenerator.generate(619_659_161_415, 619_659_162_509)
+
+      assert length(barcodes) == 110
+      assert Enum.all?(barcodes, &BarcodeGenerator.valid?/1)
+
+      # GTIN-13
       barcodes = BarcodeGenerator.generate(6_291_041_500_200, 6_291_041_501_299)
+
+      assert length(barcodes) == 110
+      assert Enum.all?(barcodes, &BarcodeGenerator.valid?/1)
+
+      # GTIN-14
+      barcodes = BarcodeGenerator.generate(62_910_415_000_200, 62_910_415_001_299)
 
       assert length(barcodes) == 110
       assert Enum.all?(barcodes, &BarcodeGenerator.valid?/1)
@@ -82,14 +108,40 @@ defmodule BarcodeGeneratorTest do
 
   describe "BarcodeGenerator.generate_stream/2" do
     test "generates valid barcodes" do
+      # GTIN-12
+      barcode_stream = BarcodeGenerator.generate_stream(619_659_161_415, 619_659_161_509)
+
+      assert Enum.count(barcode_stream) == 10
+      assert Enum.all?(barcode_stream, &BarcodeGenerator.valid?/1)
+
+      # GTIN-13
       barcode_stream = BarcodeGenerator.generate_stream(6_291_041_500_200, 6_291_041_500_299)
+
+      assert Enum.count(barcode_stream) == 10
+      assert Enum.all?(barcode_stream, &BarcodeGenerator.valid?/1)
+
+      # GTIN-14
+      barcode_stream = BarcodeGenerator.generate_stream(62_910_415_000_200, 62_910_415_000_299)
 
       assert Enum.count(barcode_stream) == 10
       assert Enum.all?(barcode_stream, &BarcodeGenerator.valid?/1)
     end
 
     test "handles stack-exceeding barcodes" do
+      # GTIN-12
+      barcode_stream = BarcodeGenerator.generate_stream(619_659_161_415, 619_659_162_509)
+
+      assert Enum.count(barcode_stream) == 110
+      assert Enum.all?(barcode_stream, &BarcodeGenerator.valid?/1)
+
+      # GTIN-13
       barcode_stream = BarcodeGenerator.generate_stream(6_291_041_500_200, 6_291_041_501_299)
+
+      assert Enum.count(barcode_stream) == 110
+      assert Enum.all?(barcode_stream, &BarcodeGenerator.valid?/1)
+
+      # GTIN-14
+      barcode_stream = BarcodeGenerator.generate_stream(62_910_415_000_200, 62_910_415_001_299)
 
       assert Enum.count(barcode_stream) == 110
       assert Enum.all?(barcode_stream, &BarcodeGenerator.valid?/1)
@@ -98,7 +150,22 @@ defmodule BarcodeGeneratorTest do
 
   describe "BarcodeGenerator.generate_flow/2" do
     test "generates valid barcodes" do
+      # GTIN-12
+      barcode_flow = BarcodeGenerator.generate_flow(619_659_161_415, 619_659_161_509)
+
+      assert %Flow{} = barcode_flow
+      assert Enum.count(barcode_flow) == 10
+      assert Enum.all?(barcode_flow, &BarcodeGenerator.valid?/1)
+
+      # GTIN-13
       barcode_flow = BarcodeGenerator.generate_flow(6_291_041_500_200, 6_291_041_500_299)
+
+      assert %Flow{} = barcode_flow
+      assert Enum.count(barcode_flow) == 10
+      assert Enum.all?(barcode_flow, &BarcodeGenerator.valid?/1)
+
+      # GTIN-14
+      barcode_flow = BarcodeGenerator.generate_flow(62_910_415_000_200, 62_910_415_000_299)
 
       assert %Flow{} = barcode_flow
       assert Enum.count(barcode_flow) == 10
@@ -106,7 +173,22 @@ defmodule BarcodeGeneratorTest do
     end
 
     test "handles stack-exceeding barcodes" do
+      # GTIN-12
+      barcode_flow = BarcodeGenerator.generate_flow(619_659_161_415, 619_659_162_509)
+
+      assert %Flow{} = barcode_flow
+      assert Enum.count(barcode_flow) == 110
+      assert Enum.all?(barcode_flow, &BarcodeGenerator.valid?/1)
+
+      # GTIN-13
       barcode_flow = BarcodeGenerator.generate_flow(6_291_041_500_200, 6_291_041_501_299)
+
+      assert %Flow{} = barcode_flow
+      assert Enum.count(barcode_flow) == 110
+      assert Enum.all?(barcode_flow, &BarcodeGenerator.valid?/1)
+
+      # GTIN-14
+      barcode_flow = BarcodeGenerator.generate_flow(62_910_415_000_200, 62_910_415_001_299)
 
       assert %Flow{} = barcode_flow
       assert Enum.count(barcode_flow) == 110

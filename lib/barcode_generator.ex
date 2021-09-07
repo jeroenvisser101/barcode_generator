@@ -25,6 +25,9 @@ defmodule BarcodeGenerator do
       iex> BarcodeGenerator.valid?(6291041500206)
       true
 
+      iex> BarcodeGenerator.valid?(619659161415)
+      true
+
       iex> BarcodeGenerator.valid?("6291041500200")
       false
 
@@ -171,8 +174,8 @@ defmodule BarcodeGenerator do
 
   @compile {:inline, multiplicator: 1}
   @spec multiplicator(integer()) :: 3 | 1
-  defp multiplicator(index) when is_odd(index), do: 3
-  defp multiplicator(_index), do: 1
+  defp multiplicator(index) when is_odd(index), do: 1
+  defp multiplicator(_index), do: 3
 
   @spec fetch_stack(non_neg_integer(), stack_with_base() | nil) :: stack_with_base()
   defp fetch_stack(base, nil), do: {init_stack(base), div(base, 10)}
@@ -184,23 +187,25 @@ defmodule BarcodeGenerator do
     end
   end
 
-  @spec init_stack(non_neg_integer() | [digit()]) :: stack()
-  defp init_stack(base_or_digits, offset \\ 0, sum \\ 0)
+  @spec init_stack(non_neg_integer() | [digit()], integer()) :: stack()
+  defp init_stack(base_or_digits, sum \\ 0)
 
-  defp init_stack(base, offset, sum) when is_integer(base),
-    do: base |> Integer.digits() |> init_stack(offset, sum)
+  defp init_stack(base, sum) when is_integer(base),
+    do: base |> Integer.digits() |> init_stack(sum)
 
-  defp init_stack(digits, offset, sum) do
+  defp init_stack(digits, sum) do
+    length = length(digits) - 1
+
     digits
-    |> Enum.with_index(offset)
+    |> Enum.with_index(fn element, index -> {element, length - index} end)
     |> Enum.map_reduce(sum, fn
       {digit, index}, acc when is_odd(index) ->
-        acc = acc + digit * 3
+        acc = acc + digit
 
         {{digit, index, acc}, acc}
 
       {digit, index}, acc ->
-        acc = acc + digit
+        acc = acc + digit * 3
 
         {{digit, index, acc}, acc}
     end)
@@ -224,7 +229,7 @@ defmodule BarcodeGenerator do
   end
 
   defp do_update_stack(digits, [{prev_digit, index, sum} | _stack], acc) do
-    init_stack(digits, index, sum - multiplicator(index) * prev_digit) ++ acc
+    init_stack(digits, sum - multiplicator(index) * prev_digit) ++ acc
   end
 
   @compile {:inline, base: 1}

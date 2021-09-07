@@ -75,7 +75,7 @@ Add `barcode_generator` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:barcode_generator, "~> 1.0.0"}]
+  [{:barcode_generator, "~> 1.1.0"}]
 end
 ```
 
